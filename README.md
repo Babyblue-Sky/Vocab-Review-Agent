@@ -84,4 +84,4 @@ is a possible future direction if this gets shared more broadly.
 
 ## License
 
-MIT (or your preference — add a `LICENSE` file before publishing)
+MIT — see [`LICENSE`](./LICENSE) for details.
