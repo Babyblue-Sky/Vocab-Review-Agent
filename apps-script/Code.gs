@@ -75,8 +75,9 @@ function lookupWord_(word, type) {
 function lookupMerriamWebster_(word) {
   const learnersKey = getProp_('MW_LEARNERS_KEY');
   let json = fetchMW_(word, 'learners', learnersKey);
+  let usedLearners = isUsableMWEntry_(json);
 
-  if (!isUsableMWEntry_(json)) {
+  if (!usedLearners) {
     const collegiateKey = getProp_('MW_COLLEGIATE_KEY');
     json = fetchMW_(word, 'collegiate', collegiateKey);
   }
@@ -91,17 +92,31 @@ function lookupMerriamWebster_(word) {
     if (vis) example = vis[1][0].t.replace(/\{it\}|\{\/it\}/g, '');
   } catch (e) { /* no example available */ }
 
-  let audioUrl = '';
+  let audioUrl = extractAudioUrl_(entry);
+
+  // Learner's had a usable definition but no audio field — check Collegiate for audio only.
+  if (!audioUrl && usedLearners) {
+    const collegiateKey = getProp_('MW_COLLEGIATE_KEY');
+    const collegiateJson = fetchMW_(word, 'collegiate', collegiateKey);
+    if (isUsableMWEntry_(collegiateJson)) {
+      audioUrl = extractAudioUrl_(collegiateJson[0]);
+    }
+  }
+
+  return { definition: shortdef, example: example, audioUrl: audioUrl };
+}
+
+function extractAudioUrl_(entry) {
   try {
     const audio = entry.hwi.prs[0].sound.audio;
     const subdir = audio.indexOf('bix') === 0 ? 'bix'
       : audio.indexOf('gg') === 0 ? 'gg'
       : /^[0-9]/.test(audio) ? 'number'
       : audio.charAt(0);
-    audioUrl = 'https://media.merriam-webster.com/audio/prons/en/us/mp3/' + subdir + '/' + audio + '.mp3';
-  } catch (e) { /* no audio available */ }
-
-  return { definition: shortdef, example: example, audioUrl: audioUrl };
+    return 'https://media.merriam-webster.com/audio/prons/en/us/mp3/' + subdir + '/' + audio + '.mp3';
+  } catch (e) {
+    return '';
+  }
 }
 
 function fetchMW_(word, dict, key) {
