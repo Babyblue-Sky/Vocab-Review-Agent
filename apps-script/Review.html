@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #F7F5F0;
+      margin: 0;
+      padding: 32px 20px;
+      color: #2B2A25;
+      display: flex;
+      justify-content: center;
+    }
+    .wrap { width: 100%; max-width: 420px; }
+    .eyebrow {
+      font-family: -apple-system, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8A8578;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .progress-track {
+      height: 5px;
+      background: #E7E3D8;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #3D5A4C;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+    .card {
+      background: white;
+      border: 1px solid #E7E3D8;
+      border-radius: 16px;
+      padding: 32px;
+      min-height: 200px;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .card h1 { font-size: 30px; margin: 0 0 6px 0; }
+    .card h2 { font-size: 22px; margin: 0 0 6px 0; }
+    .hint { color: #B5AF9E; font-size: 13px; font-style: italic; margin-top: 16px; }
+    .type-tag {
+      font-family: -apple-system, sans-serif;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+      color: #B5AF9E; margin-bottom: 6px;
+    }
+    .definition { font-size: 16px; line-height: 1.5; margin: 8px 0; }
+    .example { font-size: 14px; color: #8A8578; font-style: italic; border-left: 2px solid #E7E3D8; padding-left: 12px; }
+    audio-btn { cursor: pointer; }
+    .buttons { display: flex; gap: 12px; margin-top: 18px; }
+    button {
+      font-family: -apple-system, sans-serif;
+      flex: 1; padding: 12px; border-radius: 10px; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn-learning { background: white; border: 1px solid #D9A05B; color: #9C6B2E; }
+    .btn-known { background: #3D5A4C; color: white; }
+    .btn-audio {
+      background: none; border: none; font-size: 16px; cursor: pointer; margin-left: 6px;
+      flex: none; padding: 0;
+    }
+    .done { text-align: center; padding: 40px 20px; }
+    .empty { text-align: center; color: #8A8578; padding: 40px 20px; font-family: -apple-system, sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app"></div>
+
+  <script>
+    const words = <?= wordDataJson ?>;
+    const sessionType = "<?= sessionType ?>";
+    let index = 0, flipped = false, known = 0, learning = 0;
+
+    function render() {
+      const app = document.getElementById('app');
+
+      if (words.length === 0) {
+        app.innerHTML = '<div class="empty">No words to review for this ' + sessionType + ' session.</div>';
+        return;
+      }
+
+      if (index >= words.length) {
+        app.innerHTML =
+          '<div class="card done">' +
+            '<h2>Review complete</h2>' +
+            '<p>' + known + ' known &middot; ' + learning + ' still learning</p>' +
+          '</div>';
+        return;
+      }
+
+      const w = words[index];
+      const pct = Math.round((index / words.length) * 100);
+
+      app.innerHTML =
+        '<div class="eyebrow"><span>' + (sessionType === 'monthly' ? 'Monthly Review' : 'Weekly Review') + '</span><span>' + (index + 1) + ' / ' + words.length + '</span></div>' +
+        '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="card" onclick="flip()">' +
+          (!flipped
+            ? '<h1>' + w.word + '</h1><div class="hint">Tap to reveal definition</div>'
+            : '<div class="type-tag">' + w.type + '</div>' +
+              '<h2>' + w.word + (w.audioUrl ? ' <button class="btn-audio" onclick="event.stopPropagation(); playAudio(\'' + w.audioUrl + '\')">\uD83D\uDD0A</button>' : '') + '</h2>' +
+              '<div class="definition">' + w.definition + '</div>' +
+              (w.example ? '<div class="example">' + w.example + '</div>' : '')
+          ) +
+        '</div>' +
+        (flipped
+          ? '<div class="buttons"><button class="btn-learning" onclick="rate(false)">Still learning</button><button class="btn-known" onclick="rate(true)">Know it</button></div>'
+          : '');
+    }
+
+    function flip() { flipped = true; render(); }
+    function rate(isKnown) {
+      if (isKnown) known++; else learning++;
+      index++; flipped = false; render();
+    }
+    function playAudio(url) { new Audio(url).play(); }
+
+    render();
+  </script>
+</body>
+</html>
