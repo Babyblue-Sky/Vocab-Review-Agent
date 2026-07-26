@@ -1,0 +1,31 @@
+#vocab-bubble {
+  position: absolute;
+  z-index: 2147483647;
+  background: #FEFCF6;
+  border: 1px solid #E7E3D8;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  padding: 14px 18px;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  color: #2B2A25;
+  max-width: 280px;
+}
+#vocab-bubble .vocab-type {
+  font-family: -apple-system, sans-serif;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: #B5AF9E; margin-bottom: 2px;
+}
+#vocab-bubble .vocab-word { font-weight: 700; font-size: 17px; margin-bottom: 4px; }
+#vocab-bubble .vocab-msg { font-size: 14px; line-height: 1.4; margin-bottom: 6px; }
+#vocab-bubble .vocab-example { font-size: 13px; color: #8A8578; font-style: italic; border-left: 2px solid #E7E3D8; padding-left: 8px; margin-bottom: 6px; }
+#vocab-bubble .vocab-status {
+  font-family: -apple-system, sans-serif;
+  font-size: 12px; color: #3D5A4C; font-weight: 600;
+}
+#vocab-bubble button {
+  background: none; border: none; cursor: pointer; font-size: 14px;
+}
+#vocab-bubble #vocab-close {
+  position: absolute; top: 6px; right: 8px; cursor: pointer; color: #B5AF9E; font-size: 12px;
+}

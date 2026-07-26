@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Vocab Capture",
+  "version": "1.0.0",
+  "description": "Double-click a word, or select a phrase and press Ctrl+Shift+S (Cmd+Shift+S on Mac), to save it to your Word Bank.",
+  "permissions": ["storage"],
+  "content_scripts": [
+    { "matches": ["<all_urls>"], "js": ["config.js", "content.js"], "css": ["style.css"] }
+  ],
+  "action": { "default_popup": "popup.html" },
+  "commands": {
+    "save-phrase": {
+      "suggested_key": { "default": "Ctrl+Shift+S", "mac": "Command+Shift+S" },
+      "description": "Save selected phrase/idiom"
+    }
+  },
+  "background": { "service_worker": "background.js" }
+}
