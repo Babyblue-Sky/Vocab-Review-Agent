@@ -24,8 +24,10 @@ flashcard apps.
 ## Why
 
 Looking up a word is easy. *Remembering* it a week later is the actual
-problem. This closes that loop automatically, so the only manual step left
-is double-clicking the word in the moment.
+problem. Most dictionary tools stop at the definition and leave the
+organizing, remembering, and reviewing to you — which is exactly where
+they lose me. This closes that loop automatically, so the only manual step
+left is double-clicking the word in the moment.
 
 ## Architecture
 
