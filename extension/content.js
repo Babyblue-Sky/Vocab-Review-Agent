@@ -1,7 +1,7 @@
 // Double-click a single word -> save as "word"
 document.addEventListener("dblclick", (e) => {
   const selection = window.getSelection().toString().trim();
-  if (!selection || /\s/.test(selection)) return; // single word only
+  if (!/^[A-Za-z][A-Za-z'-]*$/.test(selection)) return; // must look like an actual word, not a stray symbol/number
   saveAndShow(selection, "word", e.pageX, e.pageY);
 });
 

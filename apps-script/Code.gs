@@ -260,6 +260,14 @@ function setupTriggers() {
   ScriptApp.newTrigger('monthlyReviewCheck').timeBased().everyDays(1).atHour(6).create();
 }
 
+// ---------- REVIEW PAGE ACTIONS (called via google.script.run from Review.html) ----------
+
+function deleteWord(word) {
+  const sheet = SpreadsheetApp.openById(WORD_BANK_SHEET_ID).getSheets()[0];
+  const row = findExistingRow_(sheet, word);
+  if (row) sheet.deleteRow(row);
+}
+
 // ---------- SERVE THE REVIEW WEBPAGE ----------
 
 function doGet(e) {
