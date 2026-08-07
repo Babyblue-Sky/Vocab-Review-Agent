@@ -237,7 +237,14 @@ function createReminder_(title, url, when) {
 }
 
 function buildReviewUrl_(sessionType) {
-  return ScriptApp.getService().getUrl() + '?session=' + sessionType;
+  // Prefer the WEB_APP_URL script property (set once in Step 3 of the setup
+  // guide) over ScriptApp.getService().getUrl(). That way, calendar reminders
+  // always point at the URL you actually deployed and shared with yourself,
+  // even if a future redeploy is done incorrectly (e.g. "New deployment"
+  // instead of "New version", which mints a different /exec URL).
+  const lockedUrl = PropertiesService.getScriptProperties().getProperty('WEB_APP_URL');
+  const base = lockedUrl || ScriptApp.getService().getUrl();
+  return base + '?session=' + sessionType;
 }
 
 // ---------- ONE-TIME SETUP: run this once from the editor ----------

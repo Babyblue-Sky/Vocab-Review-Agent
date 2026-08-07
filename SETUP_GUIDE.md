@@ -75,6 +75,19 @@ Follow these steps in order — each one depends on the last.
 6. Copy the **Web app URL** it gives you (looks like
    `https://script.google.com/macros/s/AKfycb.../exec`) — you'll need this
    again in Step 5
+7. Go back to **Project Settings** (gear icon) → **Script Properties** →
+   **Add script property**, and add one more:
+   - `WEB_APP_URL` → paste the exact Web app URL you just copied
+
+   (This locks your calendar reminders to this specific URL forever, instead
+   of the script re-detecting "the current URL" every time it creates a
+   reminder. It matters because of a gotcha explained in Step 7 below — if
+   you ever update the code and accidentally create a *new* deployment
+   instead of a new version of the existing one, the auto-detected URL would
+   silently change and any reminder already sitting on your calendar for a
+   future date would stop working. With `WEB_APP_URL` set, that can't happen
+   — reminders always use the URL you've told your extension and bookmarks
+   about.)
 
 ## Step 4 — Set up the schedule (one-time)
 
@@ -115,3 +128,31 @@ That's it — from here, the agent runs on its own:
 
 Come back after a few weeks of real use and we'll refine anything that
 needs adjusting.
+
+## Step 7 — Updating the script later (read this before you edit Code.gs again)
+
+When you want to change `Code.gs` or `Review.html` after the initial setup —
+whether that's pasting in a fix yourself or pasting in something Claude gave
+you — the code in the editor updates immediately, but the **live web app
+does not** until you redeploy. There are two very different-looking buttons
+for this, and picking the wrong one is what caused the broken calendar
+links:
+
+1. Paste in your updated code and save.
+2. Click **Deploy** → **Manage deployments**.
+3. Find your existing "Web app" deployment in the list and click the
+   **pencil (edit) icon** next to it — do **not** click "New deployment".
+4. Where it says **Version**, change the dropdown from a specific old
+   version to **New version**.
+5. Click **Deploy**.
+
+This publishes your changes to the *same* URL you already have saved in
+`WEB_APP_URL`, your extension's `config.js`, and anywhere else you've used
+it — nothing breaks.
+
+**If you (or an assistant) ever do click "New deployment" by mistake:** you'll
+get a brand-new URL. If that happens, you must update it in *three* places
+to fully recover: the `WEB_APP_URL` script property (Step 3.7), the
+extension's `config.js` (Step 5), and any reminder already sitting on your
+calendar for a future date (just edit that calendar event's description, or
+delete it — the next scheduled trigger run will create a correct one).
